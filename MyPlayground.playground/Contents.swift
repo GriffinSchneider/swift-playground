@@ -1,5 +1,7 @@
 import UIKit
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// DRYUI
 extension UIView {
     func add_subview<SubviewType:UIView>(subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
         let subview = SubviewType()
@@ -48,6 +50,8 @@ v.add_subview {v in
 
 v
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ultimate
 extension Dictionary {
     func mapPairs<OutKey: Hashable, OutValue>(@noescape transform: (Key, Value) -> (OutKey, OutValue)?) -> Dictionary<OutKey, OutValue> {
         var retVal: Dictionary<OutKey, OutValue> = [:]
@@ -213,3 +217,55 @@ aaaaa.addSubview(view)
 
 aaaaa
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Pipeline operator
+infix operator |> { associativity left precedence 140 }
+func |><LeftT, OutT>(left: LeftT, right: (LeftT -> OutT)) -> OutT {
+    return right(left)
+}
+
+func double(x : Int) -> Int {
+    return x + x
+}
+
+func add(x: Int, _ y: Int) -> Int {
+    return x + y
+}
+
+let a = 10 |> double |> { $0+4 } |> { $0*2}
+a
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Can I have Ultimate's subview types as generic type params? It seems like it...
+class TypeTest<A: UIView, B: UIView> {
+    init(a: (A -> Void)? = nil, b: (B -> Void)? = nil) {
+        print(A.self)
+        print(B.self)
+        print("------------")
+    }
+}
+
+func list<A: UIView, B: UIView>(l: TypeTest<A, B>...) -> TypeTest<A, B> {
+    return TypeTest()
+}
+
+let why = [{(_: UILabel) in}, {(_: UIView) in}]
+
+let it = TypeTest(
+    a: {(_: UIView) in },
+    b: {(_: UILabel) in }
+)
+
+let thing = list(
+    it,
+    TypeTest(
+        a: {(_: UIView) in }
+    ),
+    TypeTest(
+        a: {(_: UIView) in },
+        b: {(_: UIView) in }
+    )
+)
