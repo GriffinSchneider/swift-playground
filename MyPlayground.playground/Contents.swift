@@ -259,8 +259,14 @@ let it = TypeTest(
     b: {(_: UILabel) in }
 )
 
+let it2 = TypeTest(
+    b: {(_: UIView) in }
+)
+
+// ...or maybe not? confusing compile failure.
 let thing = list(
     it,
+    it2,
     TypeTest(
         a: {(_: UIView) in }
     ),
